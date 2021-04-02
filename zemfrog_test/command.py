@@ -1,5 +1,4 @@
 import click
-import sys
 import os
 from flask.globals import current_app
 import pytest
@@ -43,6 +42,5 @@ def run():
     Run unit tests.
     """
 
-    sys.path.insert(0, current_app.root_path)
     os.chdir(current_app.root_path)
-    pytest.main()
+    pytest.main(["tests"])
