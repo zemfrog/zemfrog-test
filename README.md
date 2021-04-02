@@ -37,5 +37,5 @@ COMMANDS = ["zemfrog_test"]
 Now that you have the `test` command, here is a list of supported commands:
 
 * `init` - Initialize the tests directory in the project directory.
-* `new` - Create unit tests for the API or blueprint. (For blueprints, enter the blueprint name that is registered in the `BLUEPRINTS` configuration. For example `zemfrog_auth.jwt`)
+* `new` - Create unit tests for the API or blueprint. (The names entered must match `APIS` and `BLUEPRINTS` configurations. For example `zemfrog_auth.jwt`)
 * `run` - To run unit tests. **It doesn't work with the `pytest` command, don't know why. :/**
