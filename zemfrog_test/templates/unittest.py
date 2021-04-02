@@ -28,6 +28,5 @@ def test_{{spec["name"]}}(client: FlaskClient):
     {% else -%}
     resp = client.{{ spec["method"] | lower}}(url, query_string=query)
     {%- endfor %}
-    print(resp.data)
     assert True
 {% endfor %}
