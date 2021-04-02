@@ -35,12 +35,13 @@ def new(name):
     g_unit_test(name)
 
 
-@group.command()
+@group.command(context_settings=dict(ignore_unknown_options=True))
 @with_appcontext
-def run():
+@click.argument("args", nargs=-1, type=click.UNPROCESSED)
+def run(args):
     """
     Run unit tests.
     """
 
     os.chdir(current_app.root_path)
-    pytest.main(["tests"])
+    pytest.main(list(args))
