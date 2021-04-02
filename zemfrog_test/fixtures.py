@@ -7,7 +7,7 @@ from pytest import fixture
 
 
 @fixture(scope="session")
-def client(app):
+def client(app, req_ctx):
     with app.test_client() as c:
         yield c
 
@@ -15,6 +15,12 @@ def client(app):
 @fixture(scope="session")
 def app_ctx(app):
     with app.app_context() as ctx:
+        yield ctx
+
+
+@fixture(scope="session")
+def req_ctx(app):
+    with app.test_request_context() as ctx:
         yield ctx
 
 
