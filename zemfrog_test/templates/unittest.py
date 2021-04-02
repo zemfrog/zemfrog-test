@@ -16,7 +16,7 @@ def test_{{spec["name"]}}(client: FlaskClient):
     data = {{ spec["data"][data_type] }}
     {% if data_type == 'json' -%}
     resp = client.{{ spec["method"] | lower}}(url, json=data, query_string=query)
-    {% else %}
+    {%- else %}
     {%- if files -%}
     data.update(files)
     {% endif -%}
@@ -28,5 +28,6 @@ def test_{{spec["name"]}}(client: FlaskClient):
     {% else -%}
     resp = client.{{ spec["method"] | lower}}(url, query_string=query)
     {%- endfor %}
+    print(resp.data)
     assert True
 {% endfor %}
