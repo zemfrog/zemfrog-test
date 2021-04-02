@@ -9,10 +9,10 @@ license = "MIT"
 python = ">=3.7,<4.0"
 zemfrog = "^4.0.5"
 pytest = "^6.2.2"
-ipython = {git = "https://github.com/ipython/ipython"}
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.11.1"
+ipython = "^7.22.0"
 
 [tool.poetry.plugins]
 
