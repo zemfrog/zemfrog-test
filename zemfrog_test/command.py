@@ -1,9 +1,11 @@
-import click
 import os
-from flask.globals import current_app
-import pytest
+import warnings
 
+import click
+import pytest
 from flask.cli import with_appcontext
+from flask.globals import current_app
+
 from .generator import g_init_test, g_unit_test
 
 
@@ -43,5 +45,6 @@ def run(args):
     Run unit tests.
     """
 
+    warnings.filterwarnings("ignore", "Module already imported")
     os.chdir(current_app.root_path)
     pytest.main(list(args))
