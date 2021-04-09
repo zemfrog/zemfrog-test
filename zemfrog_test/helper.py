@@ -1,6 +1,5 @@
 from string import ascii_letters
 from distutils.dir_util import copy_tree
-from flask_apispec.utils import Annotation
 from random import choice
 import os
 from marshmallow import Schema
@@ -55,29 +54,24 @@ def generate_random_string(length):
 
 
 def parse_args_to_spec(func: Callable):
-    apispec = getattr(func, "__apispec__", {})
-    args: List[Annotation] = apispec.get("args", [])
+    apispec = getattr(func, "_apidoc", {})
+    args: List[dict] = apispec.get("arguments", {}).get("parameters", [])
     data = {}
     for a in args:
-        opt = a.options
-        for o in opt:
-            schema = o.get("args")
-            if isinstance(schema, dict):
-                keys = list(schema.keys())
-            elif isinstance(schema, Schema):
-                keys = list(schema.fields.keys())
+        schema = a["schema"]
+        if isinstance(schema, dict):
+            keys = list(schema.keys())
+        elif isinstance(schema, Schema):
+            keys = list(schema.fields.keys())
 
-            loc = o.get("kwargs", {}).get("location")
-            if loc is None:
-                loc = "json"
-
-            if loc in ("json", "form", "files", "query"):
-                param = data.get(loc, {})
-                for k in keys:
-                    param[k] = None
-                data[loc] = param
-            else:
-                raise ValueError("parameter location is unknown: %r" % loc)
+        loc = a.get("in", "json")
+        if loc in ("json", "form", "files", "query"):
+            param = data.get(loc, {})
+            for k in keys:
+                param[k] = None
+            data[loc] = param
+        else:
+            raise ValueError("parameter location is unknown: %r" % loc)
 
     return data
 

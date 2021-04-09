@@ -7,7 +7,7 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
-zemfrog = "^4.0.5"
+zemfrog = {git = "https://github.com/zemfrog/zemfrog"}
 pytest = "^6.2.2"
 
 [tool.poetry.dev-dependencies]
