@@ -6,7 +6,7 @@ from flask import url_for
 from flask.testing import FlaskClient
 
 {% for spec in specs %}
-def test_{{spec["name"]}}(client: FlaskClient):
+def test_{{spec["func"]}}(client: FlaskClient):
     paths = {{ spec["paths"] }}
     url = url_for("{{ spec["endpoint"] }}", **paths)
     query = {{ spec["data"].pop("query", {}) }}

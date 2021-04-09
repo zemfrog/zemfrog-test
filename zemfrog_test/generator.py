@@ -48,16 +48,17 @@ def g_unit_test(name):
         except (ImportError, AttributeError):
             res = import_module(name)
 
-        endpoint = res.endpoint
+        tag = res.tag
         routes = res.routes
         for detail in routes:
             url, view, methods = detail
-            e = endpoint + "_" + view.__name__
+            e = view.__name__
             spec = {
                 "data": parse_args_to_spec(view),
                 "method": methods[0],
-                "name": e,
-                "endpoint": "api." + e,
+                "name": tag,
+                "func": e,
+                "endpoint": f"{tag}.{e}",
                 "paths": parse_paths(url),
             }
             specs.append(spec)
@@ -79,7 +80,8 @@ def g_unit_test(name):
             spec = {
                 "data": parse_args_to_spec(view),
                 "method": methods[0],
-                "name": e,
+                "name": name,
+                "func": e,
                 "endpoint": f"{name}.{e}",
                 "paths": parse_paths(url),
             }
