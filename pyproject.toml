@@ -9,6 +9,7 @@ license = "MIT"
 python = ">=3.7,<4.0"
 zemfrog = {git = "https://github.com/zemfrog/zemfrog"}
 pytest = "^6.2.2"
+schemathesis = "^3.6.1"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.11.1"
