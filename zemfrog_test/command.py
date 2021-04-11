@@ -28,13 +28,16 @@ def init():
 
 @group.command()
 @click.argument("name")
+@click.option(
+    "-s", "--schemathesis", is_flag=True, help="Use a schemathesis unit test template"
+)
 @with_appcontext
-def new(name):
+def new(name, schemathesis):
     """
     Create a new unit test.
     """
 
-    g_unit_test(name)
+    g_unit_test(name, schemathesis)
 
 
 @group.command(context_settings=dict(ignore_unknown_options=True))

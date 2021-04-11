@@ -91,4 +91,26 @@ def parse_paths(url: str) -> List[str]:
             if ":" in path:
                 path = path.split(":", 1)[1]
             paths[path] = None
+
     return paths
+
+
+def to_swagger_url(url) -> str:
+    """Parse url to swagger format
+
+    Args:
+        url (str): url endpoint
+
+    """
+
+    parts = []
+    for p in url.split("/"):
+        p = p.strip()
+        if p.startswith("<") and p.endswith(">"):
+            path = p.strip("<>")
+            if ":" in path:
+                path = path.split(":", 1)[1]
+            p = "{%s}" % path
+        parts.append(p)
+
+    return "/".join(parts)

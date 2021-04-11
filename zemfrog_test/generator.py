@@ -1,6 +1,12 @@
 from importlib import import_module
 from flask import current_app
-from .helper import copy_template, get_template, parse_args_to_spec, parse_paths
+from .helper import (
+    copy_template,
+    get_template,
+    parse_args_to_spec,
+    parse_paths,
+    to_swagger_url,
+)
 from zemfrog.helper import get_import_name, import_attr
 from jinja2 import Template
 import os
@@ -34,7 +40,7 @@ def g_init_test():
     print("(done)")
 
 
-def g_unit_test(name):
+def g_unit_test(name, schemathesis=False):
     specs = []
     output_dir = os.path.join(current_app.root_path, "tests")
     if not os.path.isdir(output_dir):
@@ -48,18 +54,22 @@ def g_unit_test(name):
         except (ImportError, AttributeError):
             res = import_module(name)
 
+        api_prefix = current_app.config.get("API_PREFIX", "/api")
         tag = res.tag
         routes = res.routes
         for detail in routes:
             url, view, methods = detail
             e = view.__name__
+            paths = parse_paths(url)
+            base = api_prefix + res.url_prefix + url
             spec = {
                 "data": parse_args_to_spec(view),
                 "method": methods[0],
                 "name": tag,
                 "func": e,
                 "endpoint": f"{tag}.{e}",
-                "paths": parse_paths(url),
+                "url": to_swagger_url(base),
+                "paths": paths,
             }
             specs.append(spec)
         output_dir = os.path.join(output_dir, "apis")
@@ -77,13 +87,16 @@ def g_unit_test(name):
         for detail in routes:
             url, view, methods = detail
             e = view.__name__
+            paths = parse_paths(url)
+            base = bp.url_prefix + url
             spec = {
                 "data": parse_args_to_spec(view),
                 "method": methods[0],
                 "name": name,
                 "func": e,
+                "url": to_swagger_url(base),
                 "endpoint": f"{name}.{e}",
-                "paths": parse_paths(url),
+                "paths": paths,
             }
             specs.append(spec)
         output_dir = os.path.join(output_dir, "blueprints")
@@ -97,13 +110,19 @@ def g_unit_test(name):
         print("Error: The file already exists %r" % output_file)
         exit(1)
 
-    tpl = get_template("unittest.py")
+    ctx = {"name": name, "specs": specs}
+    boilerplate = "unittest.py"
+    if schemathesis:
+        boilerplate = "schemathesis.py"
+        ctx["openapi"] = "/" + current_app.config["OPENAPI_JSON_PATH"].lstrip("/")
+
+    tpl = get_template(boilerplate)
     with open(tpl) as fp:
         data = fp.read()
 
     print("Creating unit testing %r... " % name, end="")
     with open(output_file, "w") as fp:
-        data = Template(data).render(name=name, specs=specs)
+        data = Template(data).render(**ctx)
         fp.write(data)
 
     print("(done)")
